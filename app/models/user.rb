@@ -24,16 +24,25 @@ class User < ApplicationRecord
     (profile_image.attached?) ? profile_image : 'no_image.jpg'
   end
 
-  def follow(user_id)
-    relationships.create(followed_id: user_id)
+  def follow(user)
+    relationships.create(followed_id: user.id)
   end
 
-  def unfollow(user_id)
-    relationships.find_by(followed_id: user_id).destroy
+  def unfollow(user)
+    relationships.find_by(followed_id: user.id).destroy
   end
 
   def following?(user)
     followings.include?(user)
   end
 
+  def self.looks(search, word)
+    if search == "perfect_match"
+      @user = User.where("name", "#{word}%")
+    elsif search == "forward_match"
+      @user = User.where("introduction", "#{word}%")
+    else
+      @user = User.all
+    end
+  end
 end
